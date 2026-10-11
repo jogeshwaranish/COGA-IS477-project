@@ -8,8 +8,7 @@
 - **Steven Wang** – Data Cleaning/Analysis/analysis
 
 ## Overview
-
-Draft: Housing has gotten more expensive relative to income in much of the U.S., but some counties were hit much harder than others. We want to measure how affordability changed in each county between 2015-2019 and 2020-2024, and find out what the counties that fell furthest behind have in common.
+Housing has gotten more expensive relative to income in much of the U.S., but some counties were hit much harder than others. We want to measure how affordability changed in each county between 2015-2019 and 2020-2024, and find out what the counties that fell furthest behind have in common.
 
 The project uses three county-level datasets. Zillow's Home Value Index gives us typical home values. From the Census Bureau's American Community Survey 5-year estimates we get household income, population, renter share, and rent, and the Bureau of Labor Statistics' Local Area Unemployment Statistics cover unemployment and labor force size. We'll also pull the 30-year mortgage rate and CPI from FRED to estimate mortgage payments and adjust for inflation. The three main datasets join on a five-digit county FIPS code and time period.
 
