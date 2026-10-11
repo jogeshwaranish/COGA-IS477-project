@@ -1,54 +1,89 @@
-# Project Plan: Housing Affordability
+# Project Idea: Housing Affordability
+
+## Team Responsibilities
+
+- **Eman Siddiqi** – Data acquisition/integration/findings
+- **Aron Rista** – Data acquisition/integration/findings
+- **Anish Bellamkonda** – Data Cleaning/Analysis/findings
+- **Steven Wang** – Data Cleaning/Analysis/analysis
 
 ## Overview
-Housing has gotten more expensive relative to income in much of the United States, but some counties were hit much harder than others. We want to measure how affordability changed in each county between 2015-2019 and 2020-2024, and find out what the counties that fell furthest behind have in common. 
 
-Our project uses three county-level datasets. Zillow’s Home Value Index gives us typical home values. From the Census Bureau’s American Community Survey 5-year estimates we get household income, population, renter share, and rent, and the Bureau of Labor Statistics’ Local Area Unemployment Statistics cover unemployment and labor force size. We’ll also pull the 30-year mortgage rate and CPI from FRED to estimate mortgage payments and adjust for inflation. The three main datasets join on a five-digit county FIPS code and time period.
+Draft: Housing has gotten more expensive relative to income in much of the U.S., but some counties were hit much harder than others. We want to measure how affordability changed in each county between 2015-2019 and 2020-2024, and find out what the counties that fell furthest behind have in common.
 
-Each dataset has its own Python download script that records a checksum, and the raw files stay untouched. Before merging, we’ll check for missing counties, FIPS codes that changed over time, and ACS estimates with large margins of error. After cleaning, we’ll convert dollars to 2024 terms and combine everything into one table with a row per county per period. Then we’ll calculate price-to-income and payment-to-income ratios and answer our questions with summary statistics, county maps, and a regression on local economic conditions. The whole pipeline will run from a single command, so anyone who clones the repo can reproduce our results, and a data dictionary will explain every variable. 
+The project uses three county-level datasets. Zillow's Home Value Index gives us typical home values. From the Census Bureau's American Community Survey 5-year estimates we get household income, population, renter share, and rent, and the Bureau of Labor Statistics' Local Area Unemployment Statistics cover unemployment and labor force size. We'll also pull the 30-year mortgage rate and CPI from FRED to estimate mortgage payments and adjust for inflation. The three main datasets join on a five-digit county FIPS code and time period.
 
-## Team
-
-* **Eman Siddiqi** — Documentation & Data Cleaning
-
-* **Aron Rista** — Data Analysis & Finding
-
-* **Anish Bellamkonda** — Data Cleaning & Analysis
-
-* **Steven Wang** — Data Cleaning & Analysis
+Each dataset has its own Python download script that records a checksum, and the raw files stay untouched. Before merging, we'll check for missing counties, FIPS codes that changed over time, and ACS estimates with large margins of error. After cleaning, we'll convert dollars to 2024 terms and combine everything into one table with a row per county per period. Then we'll calculate price-to-income and payment-to-income ratios and answer our questions with summary statistics, county maps, and a regression on local economic conditions. The whole pipeline will run from a single command, so anyone who clones the repo can reproduce our results, and a data dictionary will explain every variable.
 
 ## Research Questions
 
-1. How did housing affordability change across U.S. counties between 2015–2019 and 2020–2024?
-2. Which counties and regions lost the most affordability?
-3. What do the counties with the biggest drops have in common economically?
-4. How much of the change came from home prices, and how much from mortgage rates?
+1. **How did housing affordability change across U.S. counties between 2015-2019 and 2020-2024?** Our main measure is the typical home value from Zillow divided by median household income from the ACS. We'll also estimate the yearly mortgage payment on that home and divide it by income.
+
+2. **Which regions lost the most affordability?** We'll rank regions by how much their price-to-income ratio changed, then check whether the biggest changes cluster by state, by region, or in urban versus rural regions.
+
+3. **What do the counties with the biggest drops have in common economically?** We'll test whether changes in unemployment, income, population, and renter share help explain why affordability fell more in some places than others.
+
+4. **How much of the change came from home prices, and how much from mortgage rates?** The price-to-income ratio only moves when prices or incomes change, while the payment-to-income ratio also moves with interest rates. Comparing the two lets us separate the two effects.
 
 ## Datasets
 
-### 1. Zillow Home Value Index (ZHVI) — County Level
-* Zillow Research ([zillow.com/research/data](https://www.zillow.com/research/data/))
+### Datasets in Your Plan
+
+| Dataset in your plan | Where it is on the class list | Direct link |
+|---|---|---|
+| ACS 5-year estimates | census.gov (Aggregators) | <https://data.census.gov>, with API access at <https://api.census.gov> |
+| BLS Local Area Unemployment Statistics | data.gov (Aggregators), which catalogs the BLS LAUS dataset | <https://catalog.data.gov/dataset/local-area-unemployment-statistics>, data files at <https://www.bls.gov/lau/> |
+| FRED mortgage rate and CPI | fred.stlouisfed.org (Economics and Finance) | <https://fred.stlouisfed.org/series/MORTGAGE30US> and <https://fred.stlouisfed.org/series/CPIAUCSL> |
+| Zillow Home Value Index | Not on the list | <https://www.zillow.com/research/data/> |
+
+### 1. Zillow Home Value Index (ZHVI), County Level
+
+- **Source:** Zillow Research, <https://www.zillow.com/research/data/>
+- **File:** County-level ZHVI for all homes (single-family and condo), middle tier, smoothed and seasonally adjusted, monthly CSV
+- **Contents:** Typical home value by county and month, from 2000 to present
+- **Key fields:** StateCodeFIPS, MunicipalCodeFIPS, RegionName, State, monthly value columns
+- **Role in project:** Provides the home price side of affordability
+- **License:** Free for public and academic use under Zillow's Terms of Use; attribution to Zillow is required
 
 ### 2. American Community Survey (ACS) 5-Year Estimates
-* U.S. Census Bureau via Census Data API ([api.census.gov](https://api.census.gov))
 
-### 3. Bureau of Labor Statistics (BLS) Local Area Unemployment Statistics (LAUS)
-* U.S. Bureau of Labor Statistics ([bls.gov/lau](https://www.bls.gov/lau/))
+- **Source:** U.S. Census Bureau, accessed through the Census Data API (<https://api.census.gov>)
+- **Periods:** 2015-2019 and 2020-2024 5-year estimates (the 2020-2024 release was published January 29, 2026)
+- **Tables:** B19013 (median household income), B01003 (total population), B25003 (tenure: owner versus renter), B25064 (median gross rent), B25077 (median home value, used as a cross-check against Zillow)
+- **Key fields:** state and county FIPS codes, GEO_ID
+- **Role in project:** Provides the income side of affordability and demographic and housing context
+- **License:** U.S. government work, public domain
 
-### 4. Federal Reserve Economic Data (FRED) National Series
-* Federal Reserve Bank of St. Louis API ([fred.stlouisfed.org](https://fred.stlouisfed.org/))
+### 3. BLS Local Area Unemployment Statistics (LAUS), County Annual Averages
+
+- **Source:** U.S. Bureau of Labor Statistics, <https://www.bls.gov/lau/>
+- **Files:** County annual average files (`laucntyYY.xlsx`) for 2015 through 2024
+- **Contents:** Labor force, employed, unemployed, and unemployment rate by county and year
+- **Key fields:** State FIPS Code, County FIPS Code, Year
+- **Role in project:** Provides labor market conditions for each county
+- **License:** U.S. government work, public domain
+
+### Supporting Dataset: FRED National Series
+
+- **Source:** Federal Reserve Bank of St. Louis, FRED API
+- **Series:** MORTGAGE30US (30-year fixed mortgage rate), CPIAUCSL (Consumer Price Index)
+- **Role in project:** Mortgage rates feed the payment-to-income calculation; CPI converts 2019 dollars to 2024 dollars so both ACS periods are comparable
+- **Key fields:** Date, averaged to each five-year period
+
+### How the Datasets Link Together
+
+| Dataset | Geography key | Time key | Transformation needed |
+|---|---|---|---|
+| Zillow ZHVI | StateCodeFIPS + MunicipalCodeFIPS | Month | Zero-pad and combine into a 5-digit FIPS; average months into each 5-year period |
+| ACS 5-year | state + county | 5-year period | Combine into a 5-digit FIPS; inflation-adjust dollar values |
+| BLS LAUS | State FIPS Code + County FIPS Code | Year | Combine into a 5-digit FIPS; average years into each 5-year period |
+| FRED | National (no geography) | Week or month | Average into each 5-year period; joined to every county |
 
 ## Timeline
 
-
-
-## Constraints
-
-* **Data Licensing Restrictions:** Zillow data requires public attribution and limits raw data redistribution, unlike our other public domain federal datasets.
-* **Data Gaps in Small Counties:** Smaller counties will have less data available, and potentially more missing or inaccurate data.
-* **Mismatched Timeframes:** Zillow is monthly, BLS is annual, and ACS is a 5-year average, making them hard to align directly.
-* **Mortgage Calculation Limits:** Mortgage payment estimates may rely on assumptions that don't truly represent an individual's situation.
-* **API Rate Limits:** Downloading years of county-level data from the Census and FRED APIs may go over API rate limits. 
-
-## Gaps
-
+1. **Data collection/Acquiring** – Download the datasets we have gathered and commit to GitHub repo (Aron, Eman). *Due Date: Before Status report*
+2. **Data Cleaning and validation** – Cleaning the datasets and making sure the data is usable (Anish and Steven). *Due Date: Before Status report*
+3. **Integrate all datasets into a single holistic dataset** – Join all the datasets into a single table if possible so we can get one big data set. (Eman, Aron). *Due Date: Before Status report*
+4. **Analyze and process (Data analysis, data visualizations)** – Analyzing the holistic dataset that we have processed and trying to find signals in it. (Everyone). *Due Date: Before Final*
+5. **Report findings** – Conclude answers for our main questions (Eman, Aron). *Due Date: During or before finals week*
+6. **Documentation** – Write down reproduction docs for future uses (Steven, Anish). *Due Date: During or before finals week*
