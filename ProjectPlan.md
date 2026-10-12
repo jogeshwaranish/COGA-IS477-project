@@ -86,3 +86,12 @@ Each dataset has its own Python download script that records a checksum, and the
 4. **Analyze and process (Data analysis, data visualizations)** – Analyzing the holistic dataset that we have processed and trying to find signals in it. (Everyone). *Due Date: Before Final*
 5. **Report findings** – Conclude answers for our main questions (Eman, Aron). *Due Date: During or before finals week*
 6. **Documentation** – Write down reproduction docs for future uses (Steven, Anish). *Due Date: During or before finals week*
+
+## Constraints
+
+1. **Data Licensing Restrictions:** Zillow's data is free to use, but we have to credit Zillow and we can't republish its raw files. The Census, BLS, and FRED data are all public domain, so this only affects Zillow.
+2. **Data Gaps in Small Counties:** Small counties have less data to work with. They're more likely to be missing from Zillow entirely, and their ACS estimates come from smaller samples, so the numbers we do get are less reliable.
+3. **Bias and Statistical Significance:** We can't assume the data is unbiased. Zillow and the ACS both cover large counties better, so our results will lean toward bigger, more urban areas. Some findings may also turn out not to be statistically significant, and we'll report that instead of leaving those results out.
+4. **Mismatched Timeframes:**  The datasets run on different schedules. Zillow is monthly, BLS is yearly, and the ACS covers five years at a time, so we'll have to average Zillow and BLS into matching periods. That makes them comparable but hides changes within each period.
+5.**Mortgage Calculation Limits:** Our mortgage payment estimate depends on assumptions (down payment size, loan length, a national interest rate) that won't match any single household's situation.
+6. **API Rate Limits:**  Pulling several years of county-level data from the Census and FRED APIs means a lot of requests, and we could hit their rate limits. We may need to space out requests and save results locally so we don't download the same data twice.
