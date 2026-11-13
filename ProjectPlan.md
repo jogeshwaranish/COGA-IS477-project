@@ -87,6 +87,12 @@ Each dataset has its own Python download script that records a checksum, and the
 5. **Report findings** – Conclude answers for our main questions (Eman, Aron). *Due Date: During or before finals week*
 6. **Documentation** – Write down reproduction docs for future uses (Steven, Anish). *Due Date: During or before finals week*
 
+## Gaps
+
+1. **Zillow Policy**: Zillow doesn't want its data files to be redistributed but the assignment requires the files in repo or some folder but I think the only way to tackle this is by supplying the download scripts in github.
+2. **What analysis will be done?**: We haven't really decided what specifically we will analyze and specifically how we will analyze which is kind of a hole/gap right now that we have to address.
+3. **Workflow**: We didn't mention the whole workflow of the project yet, we still haven't discussed about it yet. 
+
 ## Constraints
 
 1. **Data Licensing Restrictions:** Zillow's data is free to use, but we have to credit Zillow and we can't republish its raw files. The Census, BLS, and FRED data are all public domain, so this only affects Zillow.
