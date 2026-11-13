@@ -91,7 +91,9 @@ Each dataset has its own Python download script that records a checksum, and the
 
 1. **Zillow Policy**: Zillow doesn't want its data files to be redistributed but the assignment requires the files in repo or some folder but I think the only way to tackle this is by supplying the download scripts in github.
 2. **What analysis will be done?**: We haven't really decided what specifically we will analyze and specifically how we will analyze which is kind of a hole/gap right now that we have to address.
-3. **Workflow**: We didn't mention the whole workflow of the project yet, we still haven't discussed about it yet. 
+3. **Workflow**: We didn't mention the whole workflow of the project yet, we still haven't discussed about it yet.
+4. **Updating counties:** Connecticut replaced its 8 counties with 9 new planning regions in newer Census, and Alaska's Valdez-Cordova Census Area split into two areas in 2019. These units are not consistent with our data. We will confirm the full list of mismatched FIPS codes with our pre-integration profile and decide whether to include them or not
+
 
 ## Constraints
 
