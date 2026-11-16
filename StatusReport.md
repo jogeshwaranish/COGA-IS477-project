@@ -3,7 +3,7 @@
 **Team:** Anish Bellamkonda, Aron Rista, Eman Siddiqi, Steven Wang
 
 ## Overview  
-
+Our main objective is still on measuring how housing affordability changed across U.S. counties between 2015–2024 using Zillow home values, ACS income and housing data, BLS labor data, and FRED mortgage rates and CPI. Since the day we released the plan, we built the workflow as separate single scripts tied together by [`run_all.py`](run_all.py): acquisition (01–04), pre-integration profiling (05), one cleaning script per source (06–09), integration (10), and post-integration quality assessment (11). Final Analysis is planned for the final milestone.
 ## Workflow  
 
 ## Task updates
@@ -16,10 +16,17 @@
 - **FRED 30-year mortgage rate (MORTGAGE30US, weekly) and CPI-U (CPIAUCSL, monthly):** [`04_acquire_fred.py`](scripts/04_acquire_fred.py) → `data/raw/fred/`. FRED doesn't require an API key for these downloads.
 
 
-### 2. Pre-integration quality assessment: 
+### 2. Pre-integration quality assessment:
+[`05_profile_raw.py`](scripts/05_profile_raw.py) profiles every raw file before cleaning and writes `results/quality/pre_integration_report.md`. It checks the four required dimensions:
+- **Accuracy:** We recalculate each county's BLS unemployment rate from its raw counts against the rate BLS reports.ACS income estimates with a large margin of error (CV over 30%) are considered as unreliable.
+- **Completeness:** We count the months missing from Zillow's 2015–2024 data, the placeholder values in the ACS (such as −666666666), and the counties in each year of BLS data.
+- **Timeliness:** We record the first and last date in each dataset to confirm it covers the full 2015–2024 period.
+- **Consistency:** We check that every county appears only once in each period and that every county code has exactly five digits.
+
+To see if the datasets can be joined,it counts how many counties appear in all three and lists any that appear in only one.
 
 ### 3. Cleaning: complete  <!-- Anish (ACS, BLS) + Steven (Zillow, FRED) -->
-Each raw source was standardized into an analysis-ready table under `data/interim/` using cleaning scripts ([`06_clean_zillow.py`](scripts/06_clean_zillow.py), [`07_clean_acs.py`](scripts/07_clean_acs.py), [`08_clean_bls.py`](scripts/08_clean_bls.py), and [`09_clean_fred.py`](scripts/09_clean_fred.py)) that handle missing values, time alignment, and shared FIPS harmonization.
+Each raw source was standardized into an analysis-ready table under `data/interim/` using cleaning scripts ([`06_clean_zillow.py`](scripts/06_clean_zillow.py), [`07_clean_acs.py`](scripts/07_clean_acs.py), [`08_clean_bls.py`](scripts/08_clean_bls.py), and [`09_clean_fred.py`](scripts/09_clean_fred.py)) that handle missing values, time alignment, and shared FIPS harmonization. 
 
 ### 4. Integration: script complete, final run pending
 [`10_integrate.py`](scripts/10_integrate.py) merges the cleaned Zillow, ACS, and BLS tables on 5-digit county FIPS and period (2015-2019 and 2020-2024), then adds each period's average FRED mortgage rate. All dollar values are converted to 2024 dollars with CPI-U. We keep only counties that appear in both periods, since the analysis compares the two. The script also calculates price-to-income and payment-to-income (assuming 20% down on a 30-year fixed loan) and writes each join's matched and unmatched counts to `results/quality/integration_log.json`. We'll run it once the ACS and BLS cleaning scripts are in, and add the join counts here.
@@ -40,8 +47,7 @@ Post-integration checks confirm zero duplicate `(fips, period)` keys, strong agr
 ## Individual contributions
 
 ### Anish Bellamkonda
-Anish 
-
+Anish set up the shared foundation of the pipeline: `requirements.txt`, `.gitignore`, `scripts/utils.py`  and `scripts/loaders.py` (readers for data), plus the `run_all.py` which ran all the scripts using subprocess. He wrote the pre-integration quality profile (`scripts/05_profile_raw.py`) and the ACS and BLS cleaning scripts (`scripts/07_clean_acs.py`, `scripts/08_clean_bls.py`). He also added the Gaps section to `ProjectPlan.md` to address the issue mentioned in previous assignemnt. For this report he wrote the overview, the pre-integration quality and ACS/BLS cleaning updates and the challenges section.
 ### Aron Rista
 
 Aron wrote the Zillow and FRED acquisition scripts (`scripts/01_acquire_zillow.py` and `scripts/04_acquire_fred.py`) and checked that both download links return live data. Both scripts go through the shared downloader, so each file's checksum, source URL, and retrieval time end up in its folder's `MANIFEST.json`. The raw Zillow CSV stays out of the repo because Zillow's Terms of Use don't allow redistribution. He also wrote the integration script (`scripts/10_integrate.py`). It joins the cleaned Zillow, ACS, and BLS tables on county FIPS and period, attaches the average FRED mortgage rate for each period, and puts every dollar figure in 2024 terms using CPI-U. Counties missing from either period are dropped, and the log records how many rows each join loses. The output includes price-to-income and payment-to-income ratios for the analysis stage. Earlier in the semester, Aron wrote the Constraints section of the project plan, and for this report he wrote the Zillow and FRED acquisition bullets and the integration update.
