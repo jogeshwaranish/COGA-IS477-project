@@ -37,12 +37,15 @@ Post-integration checks confirm zero duplicate `(fips, period)` keys, strong agr
 
 ### 6. Analysis & 7. Documentation: not started 
 
-## Changes to the project plan  
+## Changes to the project plan
+- **Geography rules:** Puerto Rico, Connecticut  and Alaska's Valdez-Cordova area (split in 2019) are not included;
+- **Dollar adjustment:** Zillow values are deflated month by month with CPI-U; 2015–2019 ACS values (2019 dollars) are scaled to 2024 dollars.
+- Added separate pre- and post-integration quality scripts and a `run_all.py` orchestrator, replacing the single command described in the plan.
 
 ## Challenges  <!-- Anish (collects from everyone) -->
 1. **Census API now requires a key.** Resolved: key read from `CENSUS_API_KEY`; raw JSON committed so reproducers can skip it.
 2. **Zillow can't be redistributed.** Resolved: git-ignored raw file, script + checksum committed; [confirming with TA].
-3. 
+3. **ACS sentinel values** look like real numbers (e.g. −666666666) and would distort averages. Resolved by converting them to nulls during cleaning.
 
 ## Individual contributions
 
