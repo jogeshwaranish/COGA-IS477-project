@@ -19,8 +19,7 @@ PERIODS = {"2015-2019": range(2015, 2020), "2020-2024": range(2020, 2025)}
 ACS_VINTAGE = {"2015-2019": 2019, "2020-2024": 2024}
 
 # BLS dosen't return anythin if the user agent isn't defined well.
-HEADERS = {"User-Agent": "IS477-COGA-project/1.0"}
-
+HEADERS = {"User-Agent": "IS477-COGA-project/1.0 (UIUC course project; contact:jb79@illinois.edu)"}
 #Mentioned in the gaps section of plan report
 # puerto rico isn't in the zillow/LAUS county files so we dropping it
 EXCLUDED_STATE_FIPS = {"72"}
