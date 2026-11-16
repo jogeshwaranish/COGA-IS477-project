@@ -40,6 +40,7 @@ Post-integration checks confirm zero duplicate `(fips, period)` keys, strong agr
 ## Individual contributions
 
 ### Anish Bellamkonda
+Anish 
 
 ### Aron Rista
 

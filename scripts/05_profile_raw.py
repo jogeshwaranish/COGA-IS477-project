@@ -5,8 +5,7 @@ from loaders import ACS_VARS, read_acs_raw, read_bls_raw, read_fred_raw, read_zi
 from utils import QUALITY, ensure_dirs
 
 #placeholders codes for the census data
-ACS_SENTINELS = [-111111111, -222222222, -333333333, -555555555, -666666666, -888888888, -999999999]
-
+ACS_SENTINELS = [-222222222, -333333333, -555555555, -666666666, -777777777, -888888888, -999999999]
 
 def valid_fips(s: pd.Series) -> int:
     return int((~s.str.fullmatch(r"\d{5}")).sum())
