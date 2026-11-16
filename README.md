@@ -18,7 +18,7 @@ pip install -r requirements.txt
 ```
 
 ### 3. Set Your Census API Key
-Set your U.S. Census API key as an environment variable using the command for your operating system:
+Set your U.S. Census API key as an environment variable using the command for your operating system and remember to activate it:
 
 * **Windows (PowerShell):**
   ```powershell
