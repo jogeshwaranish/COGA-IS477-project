@@ -1,0 +1,11 @@
+{
+  "counties_raw": 3107,
+  "rows_in_window": 372840,
+  "rows_dropped_missing_value": 17928,
+  "rows_dropped_nonpositive": 0,
+  "rows_excluded_geography": 960,
+  "rows_fips_recoded": 0,
+  "rows_dropped_duplicate_after_recode": 0,
+  "rows_out": 353952,
+  "counties_out": 3079
+}

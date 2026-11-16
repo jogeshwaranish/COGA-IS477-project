@@ -1,0 +1,132 @@
+{
+  "completeness": {
+    "rows": 5992,
+    "counties": 2996,
+    "null_counts": {
+      "median_gross_rent_2024usd": 3
+    },
+    "counties_with_both_periods": 2996,
+    "population_share_covered_by_period": {
+      "2015-2019": 320.6,
+      "2020-2024": 330.8
+    },
+    "join_losses": {
+      "acs_zillow_join": {
+        "both": 6074,
+        "left_only": 191,
+        "right_only": 1
+      },
+      "with_bls_join": {
+        "both": 6074,
+        "right_only": 190,
+        "left_only": 0
+      },
+      "rows_dropped_single_period": 82,
+      "rows_out": 5992,
+      "counties_out": 2996,
+      "cpi_2024_base": 313.698
+    }
+  },
+  "consistency": {
+    "duplicate_fips_period": 0,
+    "invalid_fips": 0,
+    "negative_numeric_values": 0,
+    "renter_share_outside_0_1": 0,
+    "unemp_rate_outside_0_100": 0
+  },
+  "accuracy": {
+    "corr_zillow_vs_acs_home_value_by_period": {
+      "2015-2019": 0.954,
+      "2020-2024": 0.962
+    },
+    "median_ratio_zillow_to_acs_home_value": 1.065,
+    "price_to_income_summary": {
+      "2015-2019": {
+        "count": 2996.0,
+        "mean": 3.07,
+        "std": 1.22,
+        "min": 0.95,
+        "25%": 2.35,
+        "50%": 2.85,
+        "75%": 3.45,
+        "max": 17.23
+      },
+      "2020-2024": {
+        "count": 2996.0,
+        "mean": 3.59,
+        "std": 1.43,
+        "min": 1.23,
+        "25%": 2.72,
+        "50%": 3.32,
+        "75%": 4.07,
+        "max": 20.61
+      }
+    },
+    "price_to_income_gt_15_outliers": [
+      {
+        "fips": "08097",
+        "period": "2015-2019",
+        "acs_name": "Pitkin County, Colorado",
+        "price_to_income": 15.815074932391102
+      },
+      {
+        "fips": "08097",
+        "period": "2020-2024",
+        "acs_name": "Pitkin County, Colorado",
+        "price_to_income": 20.611215340047195
+      },
+      {
+        "fips": "08113",
+        "period": "2020-2024",
+        "acs_name": "San Miguel County, Colorado",
+        "price_to_income": 18.148716889625298
+      },
+      {
+        "fips": "25019",
+        "period": "2015-2019",
+        "acs_name": "Nantucket County, Massachusetts",
+        "price_to_income": 16.855701298954877
+      },
+      {
+        "fips": "25019",
+        "period": "2020-2024",
+        "acs_name": "Nantucket County, Massachusetts",
+        "price_to_income": 20.26442235077647
+      },
+      {
+        "fips": "36061",
+        "period": "2015-2019",
+        "acs_name": "New York County, New York",
+        "price_to_income": 17.227099590557575
+      },
+      {
+        "fips": "56039",
+        "period": "2020-2024",
+        "acs_name": "Teton County, Wyoming",
+        "price_to_income": 15.35212913533983
+      }
+    ],
+    "income_low_reliability_rows": 3
+  },
+  "timeliness": {
+    "acs_vintages": [
+      "2015-2019 (released Dec 2020)",
+      "2020-2024 (released Jan 2026)"
+    ],
+    "zillow_months_per_county": {
+      "2015-2019": {
+        "min": 1.0,
+        "50%": 60.0
+      },
+      "2020-2024": {
+        "min": 57.0,
+        "50%": 60.0
+      }
+    },
+    "bls_years_per_county": {
+      "2015-2019": 5,
+      "2020-2024": 5
+    },
+    "rows_with_incomplete_zillow_period_lt_48_months": 461
+  }
+}

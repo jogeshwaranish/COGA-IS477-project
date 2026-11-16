@@ -1,0 +1,16 @@
+{
+  "acs_zillow_join": {
+    "both": 6074,
+    "left_only": 191,
+    "right_only": 1
+  },
+  "with_bls_join": {
+    "both": 6074,
+    "right_only": 190,
+    "left_only": 0
+  },
+  "rows_dropped_single_period": 82,
+  "rows_out": 5992,
+  "counties_out": 2996,
+  "cpi_2024_base": 313.698
+}
