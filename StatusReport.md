@@ -6,32 +6,19 @@
 Our main objective is still on measuring how housing affordability changed across U.S. counties between 2015–2024 using Zillow home values, ACS income and housing data, BLS labor data, and FRED mortgage rates and CPI. Since the day we released the plan, we built the workflow as separate single scripts tied together by [`run_all.py`](run_all.py): acquisition (01–04), pre-integration profiling (05), one cleaning script per source (06–09), integration (10), and post-integration quality assessment (11). Final Analysis is planned for the final milestone.
 ## Workflow  
 
-The project is organized as a set of single-purpose scripts tied together by a run_all.py orchestrator, which runs them in order through subprocess calls. The goal is to measure how housing affordability changed across U.S. counties between 2015 and 2024, using Zillow home values, ACS income and housing data, BLS labor data, and FRED mortgage rates and CPI.
+The project measures how housing affordability changed across U.S. counties from 2015 to 2024, using Zillow home values, ACS income and housing data, BLS labor data, and FRED mortgage rates and CPI. It runs as a set of single-purpose scripts tied together by run_all.py.
 
-The workflow starts with data acquisition (scripts 01 to 04). Zillow’s county-level ZHVI comes from 01_acquire_zillow.py. ACS 5-year estimates for the 2019 and 2024 vintages come from the Census API through 02_acquire_acs.py, with the key read from the CENSUS_API_KEY environment variable so it is never committed. BLS county annual unemployment averages for 2015 to 2024 come from 03_acquire_bls.py, which sends a descriptive User-Agent because BLS rejects requests without one. FRED’s weekly 30-year mortgage rate and monthly CPI-U come from 04_acquire_fred.py, and no key is needed. Every file’s SHA-256, source URL, and retrieval time are recorded in its folder’s MANIFEST.json. The raw ACS, BLS, and FRED files are committed so others can skip the download. Zillow’s raw CSV is git-ignored because its terms of use prohibit redistribution, so only the script and checksum manifest are committed.
+Acquisition (01–04) pulls each source: Zillow ZHVI, ACS 5-year estimates (2019 and 2024 vintages) via the Census API, BLS county unemployment (2015–2024), and FRED mortgage rates and CPI-U. Each file’s checksum, source URL, and retrieval time go into a MANIFEST.json. Raw ACS, BLS, and FRED files are committed, but Zillow’s raw CSV is git-ignored because its terms prohibit redistribution.
 
-Next is the pre-integration quality assessment, which is new compared to the earlier report. 05_profile_raw.py profiles every raw file before cleaning and writes results/quality/pre_integration_report.md. It covers four dimensions:
+Pre-integration profiling (05) is new since the plan. It checks every raw file for accuracy, completeness, timeliness, and consistency, and counts how many counties appear in all three datasets.
 
-Accuracy: It recalculates each county’s BLS unemployment rate from the raw counts and compares it to the reported rate. It also treats ACS income estimates with a coefficient of variation over 30% as unreliable.
-Completeness: It counts months missing from Zillow’s 2015 to 2024 data, ACS placeholder values such as −666666666, and counties present in each year of BLS data.
-Timeliness: It records each dataset’s first and last date to confirm full coverage of 2015 to 2024.
-Consistency: It checks that each county appears once per period and that every county code has exactly five digits.
+Cleaning (06–09) is complete. It standardizes each source into data/interim/, handling missing values, time alignment, and FIPS harmonization. ACS sentinel values like −666666666 become nulls.
 
-The script also counts how many counties appear in all three datasets and lists those that appear in only one, which shows whether the sources can be joined.
+Integration (10) is scripted, with the final run pending. It joins Zillow, ACS, and BLS on county FIPS and period (2015–2019 and 2020–2024), adds average mortgage rates, converts dollars to 2024 terms with CPI-U, keeps counties present in both periods, and computes price-to-income and payment-to-income ratios. Join counts are logged.
 
-Cleaning (scripts 06 to 09) is complete. Each raw source becomes an analysis-ready table under data/interim/, with missing values handled, time periods aligned, and FIPS codes harmonized. Zillow’s wide monthly format is reshaped into a long table, and weekly mortgage rates are averaged to monthly values alongside CPI-U. ACS sentinel values like −666666666 are converted to nulls so they don’t distort averages.
+Post-integration quality (11) is complete. It confirms no duplicate keys, cross-checks Zillow against ACS home values, checks population coverage, and flags outliers. Analysis and documentation are still to come.
 
-Integration is scripted, but the final run is pending until the ACS and BLS cleaning scripts are in. 10_integrate.py merges the cleaned Zillow, ACS, and BLS tables on 5-digit county FIPS and period (2015 to 2019 and 2020 to 2024), then adds each period’s average FRED mortgage rate. It keeps only counties present in both periods and calculates price-to-income and payment-to-income, assuming 20% down on a 30-year fixed loan. It also logs matched and unmatched counts for each join to results/quality/integration_log.json. Dollar adjustment follows two rules: Zillow values are deflated month by month with CPI-U, and 2015 to 2019 ACS values (in 2019 dollars) are scaled to 2024 dollars.
-
-Post-integration quality (11_quality_post.py) is complete. It checks the integrated county_period.csv for accuracy, completeness, timeliness, and consistency. It confirms zero duplicate (fips, period) keys, cross-validates Zillow against ACS home values, checks U.S. population coverage, and logs extreme affordability outliers. Analysis and documentation have not started and are planned for the final milestone.
-
-Compared with the original plan, three things changed:
-
-Puerto Rico, Connecticut, and Alaska’s Valdez-Cordova area (split in 2019) are excluded.
-The CPI-based dollar adjustment was defined as described above.
-Separate pre- and post-integration quality scripts and the run_all.py orchestrator replaced the single command described in the plan.
-
-Three challenges came up. The Census API now requires a key, which was resolved with the environment variable and committed raw JSON. Zillow can’t be redistributed, which was resolved with the git-ignored raw file plus script and checksum, though the team is still confirming this with the TA. ACS sentinel values that look like real numbers were converted to nulls during cleaning.
+Changes from the plan: Puerto Rico, Connecticut, and Alaska’s Valdez-Cordova area are excluded, dollars are adjusted with CPI-U, and separate quality scripts plus run_all.py were added. The main challenges were the new Census API key requirement, Zillow’s redistribution limit (still being confirmed with the TA), and the ACS sentinel values. The report’s placeholders (county counts, join counts, and the Zillow–ACS correlations) are still unfilled.
 
 ## Task updates
 
